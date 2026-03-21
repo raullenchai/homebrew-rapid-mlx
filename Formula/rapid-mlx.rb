@@ -3,8 +3,8 @@ class RapidMlx < Formula
 
   desc "AI inference for Apple Silicon — drop-in OpenAI API replacement"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://github.com/raullenchai/Rapid-MLX/archive/refs/tags/v0.3.10.tar.gz"
-  sha256 "64f0719278e229b5229e74647b8370d1170ceeaefa9744b5ae0d23e5c44d0b00"
+  url "https://github.com/raullenchai/Rapid-MLX/archive/refs/tags/v0.3.11.tar.gz"
+  sha256 "4a277c4d8f5b9cd5c341c8b117a793488a745cd602bd72421618d7a72b491b18"
   license "Apache-2.0"
 
   depends_on :macos
@@ -13,9 +13,7 @@ class RapidMlx < Formula
 
   def install
     venv = virtualenv_create(libexec, "python3.12")
-    # Install from PyPI to ensure all dependencies are resolved
     venv.pip_install "rapid-mlx==#{version}"
-    # Link CLI entry points from the venv
     %w[rapid-mlx vllm-mlx].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
