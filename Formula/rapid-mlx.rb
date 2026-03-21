@@ -3,8 +3,8 @@ class RapidMlx < Formula
 
   desc "AI inference for Apple Silicon — drop-in OpenAI API replacement"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://github.com/raullenchai/Rapid-MLX/archive/refs/tags/v0.3.1.tar.gz"
-  sha256 "caaceaa5cc0435935a4793f4c61238da4242005a8243c4aac3209262fdb4b1eb"
+  url "https://github.com/raullenchai/Rapid-MLX/archive/refs/tags/v0.3.3.tar.gz"
+  sha256 "8e8ae04587c1230690470f7fda10289f2727d8d53118bb639890dbb79cf2f2f9"
   license "Apache-2.0"
 
   depends_on :macos
@@ -19,7 +19,7 @@ class RapidMlx < Formula
   def caveats
     <<~EOS
       Start serving a model:
-        rapid-mlx serve mlx-community/Qwen3.5-9B-4bit --port 8000
+        rapid-mlx serve qwen3.5-9b --port 8000
 
       Then point any OpenAI-compatible app at:
         http://localhost:8000/v1
