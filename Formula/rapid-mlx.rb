@@ -8,7 +8,7 @@ class RapidMlx < Formula
   license "Apache-2.0"
 
   depends_on :macos
-  depends_on :arm64
+  depends_on arch: :arm64
   depends_on "python@3.12"
 
   def install
@@ -27,6 +27,6 @@ class RapidMlx < Formula
   end
 
   test do
-    assert_match "usage", shell_output("#{bin}/vllm-mlx --help 2>&1", 0)
+    assert_match "usage", shell_output("#{bin}/rapid-mlx --help 2>&1", 0)
   end
 end
