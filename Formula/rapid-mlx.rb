@@ -13,7 +13,12 @@ class RapidMlx < Formula
 
   def install
     venv = virtualenv_create(libexec, "python3.12")
-    venv.pip_install_and_link buildpath
+    # Install from PyPI to ensure all dependencies are resolved
+    venv.pip_install "rapid-mlx==#{version}"
+    # Link CLI entry points from the venv
+    %w[rapid-mlx vllm-mlx].each do |cmd|
+      (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
+    end
   end
 
   def caveats
@@ -23,6 +28,9 @@ class RapidMlx < Formula
 
       Then point any OpenAI-compatible app at:
         http://localhost:8000/v1
+
+      List available model aliases:
+        rapid-mlx models
     EOS
   end
 
