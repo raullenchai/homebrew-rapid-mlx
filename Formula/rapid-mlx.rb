@@ -3,8 +3,8 @@ class RapidMlx < Formula
 
   desc "AI inference for Apple Silicon — drop-in OpenAI API replacement"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://github.com/raullenchai/Rapid-MLX/archive/refs/tags/v0.3.11.tar.gz"
-  sha256 "4a277c4d8f5b9cd5c341c8b117a793488a745cd602bd72421618d7a72b491b18"
+  url "https://github.com/raullenchai/Rapid-MLX/archive/refs/tags/v0.3.12.tar.gz"
+  sha256 "0e116b6cd8b2d7b05191d129ca3631c3970691b1695b2187d5b6d752a8c361fa"
   license "Apache-2.0"
 
   depends_on :macos
