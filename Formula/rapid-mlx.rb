@@ -1,8 +1,8 @@
 class RapidMlx < Formula
   desc "AI inference for Apple Silicon — drop-in OpenAI API, 2-4x faster than Ollama"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://files.pythonhosted.org/packages/b2/76/2c0f0800eb0bafb5bf78f2a4194e67c7e3830117b36fa721fb594998e83e/rapid_mlx-0.4.1.tar.gz"
-  sha256 "9de68c79e8683bc23094db56757b7313e35b6a9bf65a3dee7b58fe91e75b415c"
+  url "https://files.pythonhosted.org/packages/e0/0c/a56f1092f4154f8d88e4e1a1a63711dd2f6924b404b291692b7c7c6e1448/rapid_mlx-0.4.2.tar.gz"
+  sha256 "8a608924a8ce1330fdae46322989825ee6275334fcaa101861e657ca69586b19"
   license "Apache-2.0"
   head "https://github.com/raullenchai/Rapid-MLX.git", branch: "main"
 
