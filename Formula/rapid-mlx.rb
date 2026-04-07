@@ -1,6 +1,4 @@
 class RapidMlx < Formula
-  include Language::Python::Virtualenv
-
   desc "AI inference for Apple Silicon — drop-in OpenAI API, 2-4x faster than Ollama"
   homepage "https://github.com/raullenchai/Rapid-MLX"
   url "https://files.pythonhosted.org/packages/b2/76/2c0f0800eb0bafb5bf78f2a4194e67c7e3830117b36fa721fb594998e83e/rapid_mlx-0.4.1.tar.gz"
@@ -13,12 +11,17 @@ class RapidMlx < Formula
   depends_on "python@3.12"
 
   def install
-    virtualenv_install_with_resources
+    python3 = Formula["python@3.12"].opt_bin/"python3.12"
 
-    # Ensure CLI entry points are on PATH
+    # Create venv WITH pip (so we can install dependencies)
+    system python3, "-m", "venv", libexec
+    venv_pip = libexec/"bin/pip"
+
+    # Install rapid-mlx and all dependencies from PyPI
+    system venv_pip, "install", "--no-cache-dir", "rapid-mlx==#{version}"
+
+    # Link CLI entry points
     %w[rapid-mlx vllm-mlx].each do |cmd|
-      next if (bin/cmd).exist?
-
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
   end
