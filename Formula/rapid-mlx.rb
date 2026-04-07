@@ -14,7 +14,8 @@ class RapidMlx < Formula
 
   def install
     venv = virtualenv_create(libexec, "python3.12")
-    venv.pip_install "rapid-mlx==#{version}"
+    # Install directly from PyPI without Homebrew's date filter
+    system libexec/"bin/pip", "install", "-v", "rapid-mlx==#{version}"
     %w[rapid-mlx vllm-mlx].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
