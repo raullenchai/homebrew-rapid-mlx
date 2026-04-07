@@ -13,10 +13,12 @@ class RapidMlx < Formula
   depends_on "python@3.12"
 
   def install
-    venv = virtualenv_create(libexec, "python3.12")
-    # Install directly from PyPI without Homebrew's date filter
-    system libexec/"bin/pip", "install", "-v", "rapid-mlx==#{version}"
+    virtualenv_install_with_resources
+
+    # Ensure CLI entry points are on PATH
     %w[rapid-mlx vllm-mlx].each do |cmd|
+      next if (bin/cmd).exist?
+
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
   end
