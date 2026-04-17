@@ -1,8 +1,8 @@
 class RapidMlx < Formula
   desc "AI inference for Apple Silicon — drop-in OpenAI API, 2-4x faster than Ollama"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://files.pythonhosted.org/packages/77/9b/5fc323c8fbeeebbbbcc92533fa6ccf0f544c6de8b6f8308bc6f9dd04d1c7/rapid_mlx-0.5.2.tar.gz"
-  sha256 "de646ec1b2a1041f5df9e73840b9f43e01982533ea4405d8fdb5541e3243b57f"
+  url "https://files.pythonhosted.org/packages/c4/61/fa9cb30b99978ff71080fea958c7902d700b64a44d22bfab02e7bd5ed39f/rapid_mlx-0.5.3.tar.gz"
+  sha256 "02d60fb7a89e31e7ab23a770a43b72f88d3f2677e63c81d631b45b0613b99880"
   license "Apache-2.0"
   head "https://github.com/raullenchai/Rapid-MLX.git", branch: "main"
 
@@ -18,7 +18,7 @@ class RapidMlx < Formula
     venv_pip = libexec/"bin/pip"
 
     # Install rapid-mlx and all dependencies from PyPI
-    system venv_pip, "install", "--no-cache-dir", "rapid-mlx==0.5.2"
+    system venv_pip, "install", "--no-cache-dir", "rapid-mlx==0.5.3"
 
     # Link CLI entry points
     %w[rapid-mlx vllm-mlx].each do |cmd|
