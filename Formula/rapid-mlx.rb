@@ -6,6 +6,8 @@ class RapidMlx < Formula
   license "Apache-2.0"
   head "https://github.com/raullenchai/Rapid-MLX.git", branch: "main"
 
+  preserve_rpath
+
   depends_on :macos
   depends_on arch: :arm64
   depends_on "python@3.12"
