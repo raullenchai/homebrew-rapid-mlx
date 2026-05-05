@@ -9,12 +9,11 @@ class RapidMlx < Formula
   depends_on :macos
   depends_on arch: :arm64
   depends_on "python@3.12"
-  # Build dep — pydantic_core is a Rust extension. We rebuild it from
-  # source (rather than using the PyPI wheel) so the resulting .so has
-  # headerpad space for Homebrew's keg relocation. Without this, every
-  # brew install/upgrade prints scary "Error: Failed changing dylib ID"
-  # lines for _pydantic_core.cpython-312-darwin.so even though the
-  # install otherwise succeeds.
+  # Build dep — pydantic_core and rpds-py are Rust extensions whose
+  # PyPI wheels lack headerpad space, so Homebrew's keg relocation
+  # fails with scary "Error: Failed changing dylib ID" lines even
+  # though the install otherwise succeeds. Rebuilding from source
+  # with the RUSTFLAGS below produces .so files that relink cleanly.
   depends_on "rust" => :build
 
   def install
@@ -29,10 +28,10 @@ class RapidMlx < Formula
     # "larger updated load commands do not fit" relink failure.
     ENV["RUSTFLAGS"] = "-C link-arg=-Wl,-headerpad_max_install_names"
 
-    # Install rapid-mlx with pydantic_core compiled from source (adds
-    # ~1 min on first install; cached afterwards).
+    # Install rapid-mlx with pydantic_core and rpds-py compiled from
+    # source (adds ~1 min on first install; cached afterwards).
     system venv_pip, "install", "--no-cache-dir",
-           "--no-binary", "pydantic-core",
+           "--no-binary", "pydantic-core,rpds-py",
            "rapid-mlx==0.6.13"
 
     # Link CLI entry points
