@@ -9,6 +9,13 @@ class RapidMlx < Formula
   depends_on :macos
   depends_on arch: :arm64
   depends_on "python@3.12"
+  # Build dep — pydantic_core is a Rust extension. We rebuild it from
+  # source (rather than using the PyPI wheel) so the resulting .so has
+  # headerpad space for Homebrew's keg relocation. Without this, every
+  # brew install/upgrade prints scary "Error: Failed changing dylib ID"
+  # lines for _pydantic_core.cpython-312-darwin.so even though the
+  # install otherwise succeeds.
+  depends_on "rust" => :build
 
   def install
     python3 = Formula["python@3.12"].opt_bin/"python3.12"
@@ -17,8 +24,16 @@ class RapidMlx < Formula
     system python3, "-m", "venv", libexec
     venv_pip = libexec/"bin/pip"
 
-    # Install rapid-mlx and all dependencies from PyPI
-    system venv_pip, "install", "--no-cache-dir", "rapid-mlx==0.6.12"
+    # Tell Cargo's macOS linker to leave room for install_name_tool to
+    # rewrite paths. This is the canonical fix for the
+    # "larger updated load commands do not fit" relink failure.
+    ENV["RUSTFLAGS"] = "-C link-arg=-Wl,-headerpad_max_install_names"
+
+    # Install rapid-mlx with pydantic_core compiled from source (adds
+    # ~1 min on first install; cached afterwards).
+    system venv_pip, "install", "--no-cache-dir",
+           "--no-binary", "pydantic-core",
+           "rapid-mlx==0.6.12"
 
     # Link CLI entry points
     %w[rapid-mlx vllm-mlx].each do |cmd|
