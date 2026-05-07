@@ -43,7 +43,7 @@ class RapidMlx < Formula
 
   def caveats
     <<~EOS
-      Start a server (auto-picks a model that fits your RAM):
+      Start a server — pick the alias that fits your RAM:
         rapid-mlx serve qwen3.5-4b      # 16+ GB
         rapid-mlx serve qwen3.5-9b      # 24+ GB
         rapid-mlx serve qwen3.5-35b     # 48+ GB
