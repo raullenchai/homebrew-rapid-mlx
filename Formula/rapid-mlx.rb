@@ -42,18 +42,32 @@ class RapidMlx < Formula
   end
 
   def caveats
-    <<~EOS
-      Start a server — pick the alias that fits your RAM:
-        rapid-mlx serve qwen3.5-4b      # 16+ GB
-        rapid-mlx serve qwen3.5-9b      # 24+ GB
-        rapid-mlx serve qwen3.5-35b     # 48+ GB
+    out = <<~EOS
+      Quick start — pick by RAM:
+        rapid-mlx serve qwen3.5-4b    # 16+ GB
+        rapid-mlx serve qwen3.5-9b    # 24+ GB
+        rapid-mlx serve qwen3.5-35b   # 48+ GB
 
-      Point any OpenAI-compatible app at http://localhost:8000/v1.
-      List all aliases with: rapid-mlx models
-
-      If `rapid-mlx` is shadowed by an older curl|bash install, remove it:
-        rm -f ~/.local/bin/rapid-mlx ~/.local/bin/vllm-mlx*
+      OpenAI-compatible API:  http://localhost:8000/v1
+      All model aliases:      rapid-mlx models
     EOS
+
+    # Only surface the shadow-fix hint when an older curl|bash install
+    # is actually present — otherwise the block is just noise. Brew's
+    # own PATH-shadow warning fires in the same case but doesn't tell
+    # the user *how* to remove the offending binary.
+    shadows = ["~/.local/bin/rapid-mlx", "~/.local/bin/vllm-mlx"]
+              .map { |p| File.expand_path(p) }
+              .select { |p| File.exist?(p) }
+    unless shadows.empty?
+      out += <<~EOS
+
+        An older curl|bash install is shadowing this Homebrew install. Remove it:
+          rm -f #{shadows.join(" ")}
+      EOS
+    end
+
+    out
   end
 
   test do
