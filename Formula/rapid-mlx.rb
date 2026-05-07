@@ -19,48 +19,40 @@ class RapidMlx < Formula
   def install
     python3 = Formula["python@3.12"].opt_bin/"python3.12"
 
-    # Create venv WITH pip (so we can install dependencies)
     system python3, "-m", "venv", libexec
     venv_pip = libexec/"bin/pip"
 
     # Tell Cargo's macOS linker to leave room for install_name_tool to
     # rewrite paths. This is the canonical fix for the
-    # "larger updated load commands do not fit" relink failure.
+    # "larger updated load commands do not fit" relink failure on
+    # pydantic_core and rpds-py.
     ENV["RUSTFLAGS"] = "-C link-arg=-Wl,-headerpad_max_install_names"
 
-    # Install rapid-mlx with pydantic_core and rpds-py compiled from
-    # source (adds ~1 min on first install; cached afterwards).
-    system venv_pip, "install", "--no-cache-dir",
+    # Source-build the two Rust extensions whose PyPI wheels lack
+    # headerpad space (adds ~1 min on first install). Everything else
+    # uses prebuilt wheels. Pip's wheel cache is left enabled so repeat
+    # installs / upgrades reuse downloads.
+    system venv_pip, "install", "--prefer-binary",
            "--no-binary", "pydantic-core,rpds-py",
            "rapid-mlx==0.6.15"
 
-    # Link CLI entry points
     %w[rapid-mlx vllm-mlx].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
   end
 
-  service do
-    run [opt_bin/"rapid-mlx", "serve"]
-    keep_alive false
-    working_dir var
-    log_path var/"log/rapid-mlx.log"
-    error_log_path var/"log/rapid-mlx.log"
-  end
-
   def caveats
     <<~EOS
-      Start serving a model:
-        rapid-mlx serve mlx-community/Qwen3.5-4B-MLX-4bit
+      Start a server (auto-picks a model that fits your RAM):
+        rapid-mlx serve qwen3.5-4b      # 16+ GB
+        rapid-mlx serve qwen3.5-9b      # 24+ GB
+        rapid-mlx serve qwen3.5-35b     # 48+ GB
 
-      Then point any OpenAI-compatible app at:
-        http://localhost:8000/v1
+      Point any OpenAI-compatible app at http://localhost:8000/v1.
+      List all aliases with: rapid-mlx models
 
-      List available model aliases:
-        rapid-mlx models
-
-      Tested with: PydanticAI, LangChain, smolagents, Aider,
-      LibreChat, Open WebUI, Anthropic SDK, Cursor, Claude Code.
+      If `rapid-mlx` is shadowed by an older curl|bash install, remove it:
+        rm -f ~/.local/bin/rapid-mlx ~/.local/bin/vllm-mlx*
     EOS
   end
 
