@@ -56,14 +56,24 @@ class RapidMlx < Formula
     # is actually present — otherwise the block is just noise. Brew's
     # own PATH-shadow warning fires in the same case but doesn't tell
     # the user *how* to remove the offending binary.
+    #
+    # ``File.symlink?`` covers dangling symlinks too: if the curl|bash
+    # install was later removed but its symlink remains in
+    # ``~/.local/bin``, that broken symlink still wins on PATH and we
+    # still want to surface the cleanup hint.
     shadows = ["~/.local/bin/rapid-mlx", "~/.local/bin/vllm-mlx"]
               .map { |p| File.expand_path(p) }
-              .select { |p| File.exist?(p) }
+              .select { |p| File.exist?(p) || File.symlink?(p) }
     unless shadows.empty?
+      # Single-quote each path so a copy-paste survives a HOME with a
+      # space in it. ``expand_path`` output cannot itself contain a
+      # single quote unless the username does, which would already
+      # break a great many other things.
+      quoted = shadows.map { |p| "'#{p}'" }.join(" ")
       out += <<~EOS
 
         An older curl|bash install is shadowing this Homebrew install. Remove it:
-          rm -f #{shadows.join(" ")}
+          rm -f #{quoted}
       EOS
     end
 
