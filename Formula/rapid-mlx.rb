@@ -1,8 +1,8 @@
 class RapidMlx < Formula
   desc "AI inference for Apple Silicon — drop-in OpenAI API, 2-4x faster than Ollama"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://files.pythonhosted.org/packages/e3/34/fd4fd37468fb8eb99ee161d07ae7b0027b0a6461b699276082cae48c8dd1/rapid_mlx-0.6.32.tar.gz"
-  sha256 "c3ad079c2414665c4bdb97894c88a61a2a00b8fad81d76da551795c22c25e693"
+  url "https://files.pythonhosted.org/packages/7f/8e/abf504d4048038f9157e37ebdbfd9ce3b3ce3d75b64d4ff316c2f116de07/rapid_mlx-0.6.33.tar.gz"
+  sha256 "f5dfe3557e127f3bf50fdcee86097228b6eb205dedda21708e52e26ce1bb87d7"
   license "Apache-2.0"
   head "https://github.com/raullenchai/Rapid-MLX.git", branch: "main"
 
@@ -34,7 +34,7 @@ class RapidMlx < Formula
     # installs / upgrades reuse downloads.
     system venv_pip, "install", "--prefer-binary",
            "--no-binary", "pydantic-core,rpds-py",
-           "rapid-mlx==0.6.32"
+           "rapid-mlx==0.6.33"
 
     %w[rapid-mlx vllm-mlx].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
