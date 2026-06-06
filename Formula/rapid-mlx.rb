@@ -53,12 +53,24 @@ class RapidMlx < Formula
     # ``pip install rapid-mlx[vision]``.
     system venv_pip, "install", "--no-deps", "mlx-vlm>=0.6.1"
 
-    # ``register-python-argcomplete`` is the argcomplete-bundled helper
-    # used below to generate shell completion scripts. Wrap it
-    # alongside the main entrypoints so anyone who prefers an explicit
-    # ``eval "$(register-python-argcomplete rapid-mlx)"`` line in their
-    # rc still has a stable, version-free path to point at.
-    %w[rapid-mlx vllm-mlx register-python-argcomplete].each do |cmd|
+    # Only expose the two rapid-mlx entrypoints to the user's PATH.
+    #
+    # We used to also wrap ``register-python-argcomplete`` so the
+    # fallback ``eval "$(register-python-argcomplete rapid-mlx)"``
+    # caveat resolved against a brew-installed copy. That clashed with
+    # any other Python install that already drops the same binary into
+    # ``/opt/homebrew/bin`` (the argcomplete pip package, a global
+    # python install, etc.): on upgrade, ``brew link`` aborted on the
+    # symlink conflict, which prevented ``rapid-mlx`` itself from
+    # being linked — leaving the user with no working binary after a
+    # successful build. Reported on the 0.6.79 → 0.6.80 upgrade.
+    #
+    # We don't need it on PATH anymore. The auto-installed completion
+    # scripts below cover every interactive shell without the user
+    # ever invoking ``register-python-argcomplete`` themselves; the
+    # generated scripts also embed the absolute libexec path so they
+    # survive the helper not being on PATH.
+    %w[rapid-mlx vllm-mlx].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
 
@@ -91,8 +103,7 @@ class RapidMlx < Formula
         rapid-mlx chat <TAB>    # → alias list
 
       If completion doesn't fire, ``brew shellenv`` is not in your rc.
-      Either add it (recommended), or fall back to the manual line:
-        eval "$(register-python-argcomplete rapid-mlx)"
+      Add it (recommended) and start a new shell.
     EOS
 
     # Only surface the shadow-fix hint when an older curl|bash install
