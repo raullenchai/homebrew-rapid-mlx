@@ -36,6 +36,23 @@ class RapidMlx < Formula
            "--no-binary", "pydantic-core,rpds-py",
            "rapid-mlx==0.6.79"
 
+    # Gemma 4 family text inference (``gemma-4-12b``, ``gemma-4-12b-qat-8bit``,
+    # ``gemma-4-26b``, ``gemma-4-31b``, ``gemma4`` shorthand — 11 aliases)
+    # needs ``mlx_vlm.models.gemma4.{config,language}`` classes. Without
+    # mlx-vlm installed, ``vllm_mlx/models/gemma4_text.py:137`` raises
+    # ``ModuleNotFoundError: mlx_vlm`` and the entire family is broken.
+    #
+    # Plain ``pip install mlx-vlm`` would drag in 450 MB of vision /
+    # audio / data deps (opencv-python, scipy, pyarrow, pandas, datasets,
+    # mlx-audio, miniaudio) that rapid-mlx's text-only inference never
+    # touches. ``--no-deps`` installs only the 16 MB of mlx-vlm Python
+    # source — enough to unlock Gemma 4 without bloating the install.
+    # Verified end-to-end: clean venv 460 MB → 476 MB; gemma-4-12b-qat-8bit
+    # loads + infers without any deferred-import error from the gemma4
+    # loader path. Users who want the full vision / audio stack still
+    # ``pip install rapid-mlx[vision]``.
+    system venv_pip, "install", "--no-deps", "mlx-vlm>=0.6.1"
+
     # ``register-python-argcomplete`` is the argcomplete-bundled helper
     # used below to generate shell completion scripts. Wrap it
     # alongside the main entrypoints so anyone who prefers an explicit
