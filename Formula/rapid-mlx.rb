@@ -37,14 +37,25 @@ class RapidMlx < Formula
            "rapid-mlx==0.6.79"
 
     # ``register-python-argcomplete`` is the argcomplete-bundled helper
-    # users paste into their shell rc to enable tab completion. Expose
-    # it alongside the main entrypoints so the caveats hint
-    # ``eval "$(register-python-argcomplete rapid-mlx)"`` resolves
-    # against the brew-installed copy without a hard-coded versioned
-    # path — the symlink survives every upgrade.
+    # used below to generate shell completion scripts. Wrap it
+    # alongside the main entrypoints so anyone who prefers an explicit
+    # ``eval "$(register-python-argcomplete rapid-mlx)"`` line in their
+    # rc still has a stable, version-free path to point at.
     %w[rapid-mlx vllm-mlx register-python-argcomplete].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
+
+    # Pre-generate shell completion scripts and drop them into
+    # Homebrew's standard locations. ``brew shellenv`` adds these
+    # directories to ``FPATH`` (zsh) / ``BASH_COMPLETION_COMPAT_DIR``
+    # (bash) / fish's vendor completions, so users get tab completion
+    # automatically on the next shell — no manual ``eval`` line in
+    # their rc. The generated scripts invoke ``rapid-mlx`` by name
+    # (no hardcoded paths), so they survive every upgrade.
+    rpa = libexec/"bin/register-python-argcomplete"
+    (bash_completion/"rapid-mlx").write Utils.safe_popen_read(rpa, "rapid-mlx")
+    (zsh_completion/"_rapid-mlx").write Utils.safe_popen_read(rpa, "--shell", "zsh", "rapid-mlx")
+    (fish_completion/"rapid-mlx.fish").write Utils.safe_popen_read(rpa, "--shell", "fish", "rapid-mlx")
   end
 
   def caveats
@@ -57,10 +68,14 @@ class RapidMlx < Formula
       OpenAI-compatible API:  http://localhost:8000/v1
       All model aliases:      rapid-mlx models
 
-      Enable shell tab completion (alias names, flags, subcommands):
-        bash:  eval "$(register-python-argcomplete rapid-mlx)" >> ~/.bashrc
-        zsh:   eval "$(register-python-argcomplete rapid-mlx)" >> ~/.zshrc
-        fish:  register-python-argcomplete --shell fish rapid-mlx > ~/.config/fish/completions/rapid-mlx.fish
+      Tab completion (alias names, flags, subcommands) is enabled
+      automatically — start a new shell to load it. Verify with:
+        rapid-mlx ser<TAB>      # → serve
+        rapid-mlx chat <TAB>    # → alias list
+
+      If completion doesn't fire, ``brew shellenv`` is not in your rc.
+      Either add it (recommended), or fall back to the manual line:
+        eval "$(register-python-argcomplete rapid-mlx)"
     EOS
 
     # Only surface the shadow-fix hint when an older curl|bash install
