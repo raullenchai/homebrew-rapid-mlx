@@ -36,7 +36,13 @@ class RapidMlx < Formula
            "--no-binary", "pydantic-core,rpds-py",
            "rapid-mlx==0.6.79"
 
-    %w[rapid-mlx vllm-mlx].each do |cmd|
+    # ``register-python-argcomplete`` is the argcomplete-bundled helper
+    # users paste into their shell rc to enable tab completion. Expose
+    # it alongside the main entrypoints so the caveats hint
+    # ``eval "$(register-python-argcomplete rapid-mlx)"`` resolves
+    # against the brew-installed copy without a hard-coded versioned
+    # path — the symlink survives every upgrade.
+    %w[rapid-mlx vllm-mlx register-python-argcomplete].each do |cmd|
       (bin/cmd).write_env_script libexec/"bin"/cmd, PATH: "#{libexec}/bin:${PATH}"
     end
   end
