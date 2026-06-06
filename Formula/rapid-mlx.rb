@@ -50,6 +50,11 @@ class RapidMlx < Formula
 
       OpenAI-compatible API:  http://localhost:8000/v1
       All model aliases:      rapid-mlx models
+
+      Enable shell tab completion (alias names, flags, subcommands):
+        bash:  eval "$(register-python-argcomplete rapid-mlx)" >> ~/.bashrc
+        zsh:   eval "$(register-python-argcomplete rapid-mlx)" >> ~/.zshrc
+        fish:  register-python-argcomplete --shell fish rapid-mlx > ~/.config/fish/completions/rapid-mlx.fish
     EOS
 
     # Only surface the shadow-fix hint when an older curl|bash install
