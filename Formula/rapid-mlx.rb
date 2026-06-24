@@ -134,6 +134,27 @@ class RapidMlx < Formula
     out
   end
 
+  # Run the OpenAI-compatible server as a background service.
+  #
+  # ``rapid-mlx serve`` takes a *required* positional model (the
+  # ``RAPID_MLX_DEFAULT_MODEL`` env var is only consulted by the
+  # ``launch`` subcommand, not ``serve``), so the service has to pin
+  # one. We pin ``qwen3.5-4b`` — the smallest alias and the first
+  # quickstart line in the caveats (16+ GB tier) — so the service
+  # boots on the minimum supported Apple Silicon config without
+  # downloading a large model on first start. Operators who want a
+  # bigger model can ``brew services stop`` and run their own
+  # ``rapid-mlx serve <alias>``, or edit the generated plist.
+  #
+  # Binds to 127.0.0.1:8000 (rapid-mlx's loopback-only default).
+  service do
+    run [opt_bin/"rapid-mlx", "serve", "qwen3.5-4b"]
+    keep_alive true
+    log_path var/"log/rapid-mlx.log"
+    error_log_path var/"log/rapid-mlx.log"
+    working_dir var
+  end
+
   test do
     assert_match "usage", shell_output("#{bin}/rapid-mlx --help 2>&1", 0)
   end
