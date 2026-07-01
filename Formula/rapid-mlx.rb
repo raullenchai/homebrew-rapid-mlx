@@ -1,8 +1,8 @@
 class RapidMlx < Formula
   desc "AI inference for Apple Silicon — drop-in OpenAI API, 2-4x faster than Ollama"
   homepage "https://github.com/raullenchai/Rapid-MLX"
-  url "https://files.pythonhosted.org/packages/43/df/05a3b1fd4aeb9db6c615289d7f85fb25ecfd1259c0e4516751d9efdbe13c/rapid_mlx-0.9.9.tar.gz"
-  sha256 "6efca335d702b0e457dc4a9ff4723dea1697f89e521ae2eaa6c48087bb4a1f35"
+  url "https://files.pythonhosted.org/packages/49/47/29dc45650dad3f3606b7202c4eec2d634613416156851995fc0394331e13/rapid_mlx-0.9.10.tar.gz"
+  sha256 "5ed0c9e42de0c72b1e43a3d53af9d600d22c17afd9783679567ef14f59b81255"
   license "Apache-2.0"
   head "https://github.com/raullenchai/Rapid-MLX.git", branch: "main"
 
@@ -34,7 +34,7 @@ class RapidMlx < Formula
     # installs / upgrades reuse downloads.
     system venv_pip, "install", "--prefer-binary",
            "--no-binary", "pydantic-core,rpds-py",
-           "rapid-mlx==0.9.9"
+           "rapid-mlx==0.9.10"
 
     # Gemma 4 family text inference (``gemma-4-12b``, ``gemma-4-12b-qat-8bit``,
     # ``gemma-4-26b``, ``gemma-4-31b``, ``gemma4`` shorthand — 11 aliases)
