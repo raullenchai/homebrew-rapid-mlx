@@ -47,11 +47,24 @@ class RapidMlx < Formula
     # mlx-audio, miniaudio) that rapid-mlx's text-only inference never
     # touches. ``--no-deps`` installs only the 16 MB of mlx-vlm Python
     # source — enough to unlock Gemma 4 without bloating the install.
-    # Verified end-to-end: clean venv 460 MB → 476 MB; gemma-4-12b-qat-8bit
-    # loads + infers without any deferred-import error from the gemma4
-    # loader path. Users who want the full vision / audio stack still
+    # Users who want the full vision / audio stack (video frames via
+    # opencv, audio via mlx-audio, the DFlash torch path) still
     # ``pip install rapid-mlx[vision]``.
     system venv_pip, "install", "--no-deps", "mlx-vlm>=0.6.1"
+
+    # Pillow is mlx-vlm's mandatory image dependency but is NOT pulled by
+    # the ``--no-deps`` install above. Without it every vision path dies at
+    # ``mlx_vlm/utils.py`` ``from PIL import Image`` with
+    # ``ModuleNotFoundError: No module named 'PIL'`` — while
+    # ``rapid-mlx doctor`` still (falsely) reported vision OK (issue #1126).
+    # Pillow is ~15 MB; we add ONLY it (not the full ``[vision]``
+    # torch/opencv stack, ~1.1 GB) so image vision works out of the box
+    # while keeping the install lean. mlx-vlm inference is MLX-native and
+    # the still-image path is PIL + numpy, so no torch/opencv is needed at
+    # runtime; verified end-to-end with an mlx-vlm VLM serving an image
+    # request with torch/cv2 absent. Video/audio and the DFlash torch
+    # paths still require ``pip install rapid-mlx[vision]``.
+    system venv_pip, "install", "pillow>=10.0.0"
 
     # Only expose the two rapid-mlx entrypoints to the user's PATH.
     #
