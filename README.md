@@ -1,27 +1,34 @@
-# Homebrew Tap for Rapid-MLX
+# Homebrew Tap for Rapid-MLX — retired
 
-AI inference for Apple Silicon — drop-in OpenAI API replacement.
+> **This tap is retired.** `rapid-mlx` now lives in **[homebrew/core](https://formulae.brew.sh/formula/rapid-mlx)**,
+> so you no longer need this tap (or `brew trust`).
 
 ## Install
 
 ```bash
-brew install raullenchai/rapid-mlx/rapid-mlx
-```
-
-Or tap first:
-
-```bash
-brew tap raullenchai/rapid-mlx
 brew install rapid-mlx
 ```
 
-## Usage
+No tap, no trust — just one command. Upgrade later with `brew upgrade rapid-mlx`.
+
+### Already installed from this tap?
+
+Switch to the core formula:
 
 ```bash
-rapid-mlx serve mlx-community/Qwen3.5-9B-4bit --port 8000
+brew uninstall rapid-mlx
+brew untap raullenchai/rapid-mlx
+brew install rapid-mlx
 ```
 
-## More info
+## Where things live now
 
-- [Rapid-MLX repo](https://github.com/raullenchai/Rapid-MLX)
-- [PyPI](https://pypi.org/project/vllm-mlx/)
+- **Engine + docs:** https://github.com/raullenchai/Rapid-MLX
+- **Install guide:** https://rapidmlx.com/download
+- **Core formula:** https://formulae.brew.sh/formula/rapid-mlx
+- **PyPI:** https://pypi.org/project/rapid-mlx/
+
+---
+
+The formula here is kept only so existing tap users see a deprecation notice.
+It is no longer updated on new releases — homebrew/core tracks those.

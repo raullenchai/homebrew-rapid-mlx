@@ -6,6 +6,11 @@ class RapidMlx < Formula
   license "Apache-2.0"
   head "https://github.com/raullenchai/Rapid-MLX.git", branch: "main"
 
+  # Retired: rapid-mlx is now in homebrew/core. Install with
+  # `brew install rapid-mlx` (no tap, no trust). This tap formula is
+  # kept only so existing tap users get a clear deprecation notice.
+  deprecate! date: "2026-07-21", because: "it is now in homebrew/core — use `brew install rapid-mlx`"
+
   depends_on :macos
   depends_on arch: :arm64
   depends_on "python@3.12"
