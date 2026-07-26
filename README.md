@@ -13,12 +13,22 @@ No tap, no trust — just one command. Upgrade later with `brew upgrade rapid-ml
 
 ### Already installed from this tap?
 
-Switch to the core formula:
+Homebrew will migrate the existing installation to the core formula. Update
+Homebrew, then upgrade normally:
 
 ```bash
-brew uninstall rapid-mlx
+brew update
+brew upgrade rapid-mlx
+```
+
+No uninstall or reinstall is required. The old fully qualified command
+(`brew upgrade raullenchai/rapid-mlx/rapid-mlx`) also resolves to the core
+formula after `brew update`.
+
+Once the migration is complete, the retired tap can be removed if desired:
+
+```bash
 brew untap raullenchai/rapid-mlx
-brew install rapid-mlx
 ```
 
 ## Where things live now
@@ -30,5 +40,5 @@ brew install rapid-mlx
 
 ---
 
-The formula here is kept only so existing tap users see a deprecation notice.
-It is no longer updated on new releases — homebrew/core tracks those.
+The migration metadata in this tap redirects existing installations to
+homebrew/core. New releases are maintained there.
